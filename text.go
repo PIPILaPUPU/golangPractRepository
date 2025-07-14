@@ -2,33 +2,22 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
-	"time"
+	"errors"
 )
 
-func Counter(count int, t time.Time) string {
-	date := t.Format("02.01.2006")
-	return fmt.Sprintf("%d %s", count, date)
-}
+var divByZero = errors.New("нельзя делить на ноль")
 
-func ParseCounter(input string) (int, time.Time, error) {
-	// допишите код функции
-	out := strings.Split(input, " ")
-	count, err := strconv.Atoi(out[0])
-	data, err := time.Parse("02.01.2006", out[1])
-	return count, data, err
+func div(x, y int) (int, error) {
+	if y == 0 {
+		return 0, divByZero
+	}
+
+	return x/y, nil
 }
 
 func main() {
-	now := time.Now()
-	for count := 1; count < 4; count++ {
-		s := Counter(count, now)
-		counter, t, err := ParseCounter(s)
-		if err != nil {
-			fmt.Println("Ошибка:", err)
-			return
-		}
-		fmt.Println(counter, t.Format("02.01.2006"))
-	}
+	var a,b int
+	fmt.Println(div(a, b))
+	a, b = 27,3
+	fmt.Println(div(a, b))
 }
