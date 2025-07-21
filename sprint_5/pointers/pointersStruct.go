@@ -1,4 +1,4 @@
-package main
+package pointers
 
 import "fmt"
 
@@ -51,7 +51,7 @@ func (queue *Queue) Push(person *Character) {
 	ptr.next = newItem
 }
 
-func main() {
+func ptrStructExequte() {
 	list := []*Character{
 		{"царь", 90}, {"царевич", 50},
 		{"король", 80}, {"королевич", 40}}
