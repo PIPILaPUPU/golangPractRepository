@@ -2,70 +2,60 @@ package main
 
 import "fmt"
 
-// Queue описывает очередь.
-type Queue struct {
-	first *QueueItem // указатель на первый элемент очереди
+// Property описывает общие свойства предметов.
+type Property struct {
+	Name  string // название предмета
+	Price int
 }
 
-// QueueItem описывает элемент очереди.
-type QueueItem struct {
-	person *Character // указатель на персонажа
-	next   *QueueItem // указатель на следующий элемент
+// Loot содержит методы управления инвентарём.
+type Loot interface {
+	Apply()
+	Properties() Property
+	Sell() int
 }
 
-// Character описывает персонажа игры.
-type Character struct {
-	Name  string
-	Level int
+type Scroll struct {
+	Property
 }
 
-// Pop удаляет первый элемент из очереди и возвращает указатель на персонажа.
-func (queue *Queue) Pop() (*Character, bool) {
-	// вставьте недостающий код
-	if queue.first == nil {
-		return nil, false
-	}
-
-	temp := queue.first.person
-	queue.first = queue.first.next
-	return temp, true
+type Sword struct {
+	Property
 }
 
-// Push добавляет в конец очереди элемент с указанным персонажем.
-func (queue *Queue) Push(person *Character) {
-	// вставьте недостающий код
-	newItem := &QueueItem{
-		person: person,
-		next:   nil,
-	}
+// добавьте нужные методы для типов Scroll и Sword
+func (scroll Scroll) Apply() {
+	// ...
+}
 
-	if queue.first == nil {
-		queue.first = newItem
-		return
-	}
+func (scroll Scroll) Properties() Property {
+	return scroll.Property
+}
 
-	ptr := queue.first
-	for ptr.next != nil {
-		ptr = ptr.next
-	}
-	ptr.next = newItem
+func (scroll Scroll) Sell() int {
+	return scroll.Price
+}
+
+func (sword Sword) Apply() {
+	// ...
+}
+
+func (sword Sword) Properties() Property {
+	return sword.Property
+}
+
+func (sword Sword) Sell() int {
+	return sword.Price
 }
 
 func main() {
-	list := []*Character{
-		{"царь", 90}, {"царевич", 50},
-		{"король", 80}, {"королевич", 40}}
-
-	queue := &Queue{}
-	for _, v := range list {
-		queue.Push(v)
+	loot := []Loot{
+		Scroll{Property{Name: "Свиток знаний"}},
+		Sword{Property{Name: "Двуручный меч"}},
 	}
 
-	for {
-		v, ok := queue.Pop()
-		if !ok {
-			break
-		}
-		fmt.Println(*v)
+	for _, v := range loot {
+		fmt.Println(v.Properties())
 	}
+	fmt.Println("Успех!")
 }
