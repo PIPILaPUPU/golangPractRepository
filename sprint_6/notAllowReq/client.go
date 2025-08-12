@@ -1,4 +1,4 @@
-package main
+package notallowreq
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-func main() {
+func client() {
 	resp, err := http.PostForm("http://localhost:8080/", url.Values{})
 	if err != nil {
 		fmt.Println("Ошибка", err)

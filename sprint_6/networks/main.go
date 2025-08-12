@@ -6,20 +6,27 @@ import (
 	"time"
 )
 
-func mainHandle(res http.ResponseWriter, req *http.Request) {
-	var out string
+func handleTime(res http.ResponseWriter, req *http.Request) {
+	s := time.Now().Format("02.01.2006 15:04:05")
+	res.Write([]byte(s))
+}
 
-	if req.URL.Path == `/time` || req.URL.Path == `/time/` {
-		out = time.Now().Format("02.01.2006 15:04:05")
-	} else {
-		out = fmt.Sprintf("Host: %s\nPath: %s\nMethod: %s",
-			req.Host, req.URL.Path, req.Method)
-	}
-	res.Write([]byte(out))
+func handleMain(res http.ResponseWriter, req *http.Request) {
+	s := fmt.Sprintf("Method: %s\nHost: %s\nPath: %s",
+		req.Method, req.Host, req.URL.Path)
+	res.Write([]byte(s))
+}
+
+func handleDate(res http.ResponseWriter, req *http.Request) {
+	s := time.Now().Format("02.01.2006")
+	res.Write([]byte(s))
 }
 
 func main() {
-	http.HandleFunc(`/`, mainHandle)
+	http.HandleFunc("/time", handleTime)
+	http.HandleFunc("/", handleMain)
+	http.HandleFunc("/date", handleDate)
+
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		panic(err)
