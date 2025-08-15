@@ -1,25 +1,41 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
 )
 
+type User struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"-"`
+	active   bool
+}
+
 func main() {
-	resp, err := http.PostForm("http://localhost:8080/", url.Values{})
+	user := User{
+		ID:       1,
+		Name:     "Гофер",
+		Email:    "gopher@gophermate.com",
+		Password: "I4mG0ph3R",
+		active:   true,
+	}
+
+	// преобразуйте user в JSON формат
+	u, err := json.Marshal(user)
 	if err != nil {
-		fmt.Println("Ошибка", err)
+		fmt.Println(err)
 		return
 	}
-	fmt.Println("Код статуса:", resp.StatusCode)
-	// читаем тело ответа
-	body, err := io.ReadAll(resp.Body)
-	resp.Body.Close()
+	var newUser User
+
+	// десериализуйте данные из JSON формата в переменную newUser
+	err = json.Unmarshal(u, &newUser)
 	if err != nil {
-		fmt.Println("Ошибка", err)
+		fmt.Println(err)
 		return
 	}
-	fmt.Println(string(body))
+
+	fmt.Println(newUser)
 }

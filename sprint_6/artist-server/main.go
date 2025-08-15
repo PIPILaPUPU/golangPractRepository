@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -27,29 +28,41 @@ var artists = map[string]Artist{
 			`Live Like A Dream`,
 		},
 	},
-
-	"3 seconds to Mars": {
-		ID:    2,
-		Name:  "30 seconds to Mars",
-		Genre: "rock",
-		Songs: []string{
-			`The Kill`,
-			`A Beautiful Lie`,
-			`Attack`,
-			`Live Like A Dream`,
-		},
-	},
 }
 
-// JSONHandler принимает значение из параметра id, ищет по нему в мапе группу, конвертирует
-// данные из переменной artists в JSON и выводит их в браузере.
+// JSONHandler принимает значение из параметра band, ищет по нему в мапе группу, конвертирует
+// данные из переменной band в JSON и выводит их в браузере.
 func JSONHandler(w http.ResponseWriter, r *http.Request) {
-	band := r.URL.Query().Get("id")
+	var band string
+
+	// берем название группы из параметра `band`
+	band = r.URL.Query().Get("band")
+
+	// Проверяем POST-запрос или нет
+	if r.Method == http.MethodPost {
+		var artist Artist
+		var buf bytes.Buffer
+		// читаем тело запроса
+		_, err := buf.ReadFrom(r.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		// десериализуем JSON в Artist
+		if err = json.Unmarshal(buf.Bytes(), &artist); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		artists[band] = artist
+	}
+
+	// если не POST-запрос, то всё как в предыдущем примере
 	resp, err := json.Marshal(artists[band])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
