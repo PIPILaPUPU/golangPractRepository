@@ -2,21 +2,24 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"net/http"
+	"time"
 )
 
-func mainHandle(w http.ResponseWriter, req *http.Request) {
-	if req.Method == http.MethodPost {
-		fmt.Fprintf(w, "Email: %s\nName: %s",
-			req.PostFormValue("email"), req.PostFormValue("name"))
-		return
+func mainHandle(res http.ResponseWriter, req *http.Request) {
+	var out string
+
+	if req.URL.Path == `/time` || req.URL.Path == `/time/` {
+		out = time.Now().Format("02.01.2006 15:04:05")
+	} else {
+		out = fmt.Sprintf("Host: %s\nPath: %s\nMethod: %s",
+			req.Host, req.URL.Path, req.Method)
 	}
-	io.WriteString(w, "Отправьте POST запрос с параметрами email и name")
+	res.Write([]byte(out))
 }
 
 func main() {
-	http.HandleFunc("/", mainHandle)
+	http.HandleFunc(`/`, mainHandle)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		panic(err)
