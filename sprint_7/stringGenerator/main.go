@@ -8,21 +8,23 @@ import (
 
 func main() {
 	rnd := rand.NewSource(time.Now().Unix())
-	data := make([]string, 0, 15)
+	data := make([]string, 0, 10)
 
-	for i := 0; i < 15; i++ {
-		data = append(data, stringGenerator(10, rnd))
+	for i := 0; i < 10; i++ {
+		data = append(data, strGen(10, rnd))
 	}
 
-	fmt.Println(data)
+	fmt.Print(data)
 }
 
-func stringGenerator(n int, generator rand.Source) string {
-	by := make([]byte, 0, n+1)
+func strGen(n int, gen rand.Source) string {
+	res := make([]byte, 0, n)
 
 	for i := 0; i < n; i++ {
-		by = append(by, byte(generator.Int63()%26+97))
+		letter := gen.Int63()%26 + 97
+
+		res = append(res, byte(letter))
 	}
 
-	return string(by)
+	return string(res)
 }
