@@ -1,16 +1,19 @@
-package main
+package geometry
 
 import (
 	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func main() {
+func TestHypotenuse(t *testing.T) {
 
 	table := []struct {
 		a, b   float64
 		result string
 	}{
-		{0, 0, "0,00"},
+		{0, 0, "0.00"},
 		{0, 9, "9.00"},
 		{3, 4, "5.00"},
 		{10, 21, "23.26"},
@@ -22,6 +25,7 @@ func main() {
 	}
 
 	for _, item := range table {
-		fmt.Println(item)
+		h := Hypotenuse(item.a, item.b)
+		assert.Equal(t, item.result, fmt.Sprintf("%.2f", h))
 	}
 }
